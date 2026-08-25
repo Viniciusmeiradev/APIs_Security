@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autenticação de 2 Fatores</title>
+</head>
+<body>
+    <form id="login-form" action="/login" method="post">
+        <input type="email" id="email" placeholder="E-mail" required>
+        <input type="password" id="password" placeholder="Senha" required>
+        <button type="submit">Entrar</button>
+    </form>
+    
+    <form id="2fa-form" style="display:none;">
+        <p>Insira o código autenticador!</p>
+        <input type="text" id="token_2fa" max-length="6" pattern="\d{6}" placeholder="Código de 6 digitos" required>
+        <button type="submit">Verificar código</button>
+    </form>
+</body>
+</html>
