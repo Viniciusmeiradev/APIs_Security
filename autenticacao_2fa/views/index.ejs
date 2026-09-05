@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Autenticação 2FA</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <div class="card">
+        <div id="error-message" class="error-hidden"></div>
+
+        <%- include('partials/login') %>
+        <%- include('partials/twofactor') %>
+        <%- include('partials/menu') %>
+    </div>
+
+    <script>
+        let tempTokenStorage='';
+        const errorDiv= document.getElementById('error-message');
+
+        function showError(msg){
+            errorDiv.textContent=msg;
+            errorDiv.classList.remove('hidden');
+        }
+
+        function hideError(){
+            errorDiv.textContent='';
+            errorDiv.classList.add('hidden');
+        }
+
+        document.getElementById('form-login').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideError();
+
+            const email = document.getElementById('email').value;
+            const senha = document.getElementById('senha').value;
+
+            try{
+                const res = await fetch('/api/login',{
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({email, senha})
+                });
+                const data = await res.json();
+                if(!res.ok) throw new Error(data.error || 'Error ao realizar login');
+
+                if (data.requires_2fa){
+                    tempTokenStorage = data.temp_token;
+                    document.getElementById('interface-login').classList.add('hidden');
+                    document.getElementById('interface-2fa').classList.remove('hidden');
+                } else{
+                    document.getElementById('interface-login').classList.add('hidden');
+                    document.getElementById('interface-menu').classList.remove('hidden');
+                }
+            }catch(error){
+                showError(error.message);
+            }
+        });
+
+        document.getElementById('form-2fa').addEventListener('submit', async (e) =>{
+            e.preventDefault();
+            hideError();
+
+            const token_2fa = document.getElementById('token_2fa').value;
+
+            try{
+                const res = await fetch('/api/verify-2fa', {
+                    method: 'POST',
+                    headers: {'Content-Type':'application/json'},
+                    body: JSON.stringify({temp_token: tempTokenStorage, token_2fa})
+                });
+
+                const data= await res.json();
+
+                if(!res.ok) throw new Error(data.error || 'Código 2FA inválidos.');
+
+                document.getElementById('interface-2fa').classList.add('hidden');
+                document.getElementById('interface-menu').classList.remove('hidden');
+            }catch(error){
+                showError(error.message);
+            }
+        });
+
+        document.getElementById('btn-voltar').addEventListener('click', () => {
+            hideError();
+            document.getElementById('token_2fa').value='';
+            document.getElementById('interface-2fa').classList.add('hidden');
+            document.getElementById('interface-login').classList.remove('hidden');
+        });
+    </script>
+</body>
+</html>

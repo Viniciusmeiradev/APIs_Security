@@ -1,0 +1,12 @@
+<div id="interface-2fa" class="hidden">
+    <h2>Verificação em 2 Etapas</h2>
+    <p class="instruction">Abra seu aplicativo autenticador e digite o código de 6 dígitos</p>
+    <form id="form-2fa">
+        <div class="input-group">
+            <label>Código de 6 digitos</label>
+            <input type="text" id="token_2fa" maxlength="6" pattern="\d{6}" placeholder="000000" autocomplete="one-time-code" require autofocus>
+        </div>
+        <button type="submit">Validar Código</button>
+        <button type="button" class="back-btn" id="btn-voltar">Voltar ao login</button>
+    </form>
+</div>
