@@ -1,11 +1,11 @@
 const bcrypt = require('bcrypt');
-const hashedPassword = bcrypt.hashSync(Senha123, 10);
+const hashedPassword = bcrypt.hashSync('Senha123', 10);
 const usuario = [{
     id:1,
     email: 'usuario01@gmail.com',
     senha: hashedPassword, 
     is_2fa_enabled: true, 
-    secrety_key: 'JBSWY3DPEHPK3PXP'
+    secret_key: 'JBSWY3DPEHPK3PXP'
 }];
 
 module.exports ={
