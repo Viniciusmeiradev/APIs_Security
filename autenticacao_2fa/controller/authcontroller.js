@@ -1,6 +1,6 @@
-const jwt = require('jasonwebtoken');
+const jwt = require('jsonwebtoken');
 const speakeasy = require('speakeasy');
-const {findUserByEmail, findUserById, verifyPassword} = require('/database');
+const {findUserByEmail, findUserById, verifyPassword} = require('./database');
 const JWT_SECRET = 'chave do web token';
 
 //Validação de email e senha
@@ -8,12 +8,12 @@ exports.login = (req, res) =>{
     const {email, senha} = req.body;
     const usuario = findUserByEmail(email);
 
-    if(!usuario || !verifyPassword(senha, usuario.senha()){
+    if(!usuario || !verifyPassword(senha, usuario.senha)) {
         return res.status(401).json({error: 'E-mail ou senha inválidos.'});
     }
     //2FA ativado, token disponivel por 2 minutos   
     if(usuario.is_2fa_enabled){
-        const tempToken = jwt.sign({ usuarioId: usuario.id, type: '2fa_peding'}, JWT_SECRET, {expireIn: '2m'});
+        const tempToken = jwt.sign({ usuarioId: usuario.id, type: '2fa_peding'}, JWT_SECRET, {expiresIn: '2m'});
         return res.json({
             require_2fa: true,
             temp_Token: tempToken
@@ -21,7 +21,7 @@ exports.login = (req, res) =>{
     }
 
     //2FA desativado, token fixo 
-    const authToken = jwt.sign({usuarioId: usuario.id}, JWT_SECRET, {expireIn: '1h'});
+    const authToken = jwt.sign({usuarioId: usuario.id}, JWT_SECRET, {expiresIn: '1h'});
     return res.json({
         require_2fa: false,
         token: authToken
@@ -50,7 +50,7 @@ exports.verify2FA = (req, res) =>{
         //Valida o código de 6 digitos
         const verifica = speakeasy.totp.verify({
             secret: usuario.secret_key, 
-            encodig: 'base64',
+            encoding: 'base32',
             token: token_2fa,
             window: 1 
         });
@@ -59,7 +59,7 @@ exports.verify2FA = (req, res) =>{
         }
 
         //2FA validado
-        const authToken = jwt.sign({usuarioId: usuario.id}, JWT_SECRET, {expireIn: '1h'});
+        const authToken = jwt.sign({usuarioId: usuario.id}, JWT_SECRET, {expiresIn: '1h'});
         return res.json({success:true, token: authToken});
     }catch(error){
         return res.status(401).json({error: 'Sessão expirada. Faça login novamente!'});
