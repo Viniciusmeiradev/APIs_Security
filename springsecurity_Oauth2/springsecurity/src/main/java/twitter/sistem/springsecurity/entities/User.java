@@ -6,14 +6,14 @@ import java.lang.annotation.Inherited;
 import java.util.UUID;
 
 @Entity
-@Table(name = "table_users")
+@Table(name = "tb_usuarios")
 public class User{
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID userId;
 
-    private String username;
-    private String password;
+    private String nome;
+    private String senha;
     private Set<Role> roles;
 }
