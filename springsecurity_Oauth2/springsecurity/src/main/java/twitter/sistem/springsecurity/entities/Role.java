@@ -1,7 +1,5 @@
 package twitter.sistem.springsecurity.entities;
 
-import java.lang.annotation.Inherited;
-
 import jakarta.persistence.*;
 
 @Entity
@@ -9,8 +7,8 @@ import jakarta.persistence.*;
 public class Role{
 
     @Id
-    @GeneratedValue(strategy = GeneratedType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long roleId;
 
-    private String nome;
+    private String rolenome;
 }
