@@ -1,8 +1,6 @@
 package twitter.sistem.springsecurity.entities;
 
 import jakarta.persistence.*;
-
-import java.lang.annotation.Inherited;
 import java.util.UUID;
 
 @Entity
