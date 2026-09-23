@@ -11,11 +11,12 @@ import twitter.sistem.springsecurity.repository.UserRepository;
 
 @RestController
 public class TokenController {
-    private final JwtEncoder jwtEnconder;
+    private final JwtEncoder jwtEncoder;
     private final UserRepository userRepository;
 
-    public TokenController(JwtEncoder jwtEncoder){
+    public TokenController(JwtEncoder jwtEncoder, UserRepository userRepository){
         this.jwtEncoder = jwtEncoder;
+        this.userRepository = userRepository;
     }
 
     @PostMapping("/login")
@@ -23,4 +24,3 @@ public class TokenController {
         userRepository.findBynome(loginRequest.nome());
     }
 }
-
