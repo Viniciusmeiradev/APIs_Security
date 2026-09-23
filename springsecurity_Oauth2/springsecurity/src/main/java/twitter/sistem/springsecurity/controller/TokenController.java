@@ -1,5 +1,6 @@
 package twitter.sistem.springsecurity.controller;
 
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +22,10 @@ public class TokenController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse>login(@RequestBody LoginRequest loginRequest){
-        userRepository.findBynome(loginRequest.nome());
+        var user = userRepository.findBynome(loginRequest.nome());
+
+        if(user.isEmpty()){
+            throw new BadCredentialsException("Usuario ou senha inválido!");
+        }
     }
 }
