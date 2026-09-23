@@ -2,6 +2,8 @@ package twitter.sistem.springsecurity.entities;
 
 import jakarta.persistence.*;
 import java.util.UUID;
+import java.util.Set;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Entity
 @Table(name = "tb_usuarios")
@@ -55,4 +57,7 @@ public class User{
         this.roles = roles;
     }
 
+    public boolean isLoginCorrect(LoginRequest loginRequest, PasswordEncoder passwordEncoder){
+        return passwordEncoder.matches(loginRequest.senha(), this.senha);
+    }
 }
