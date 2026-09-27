@@ -1,5 +1,8 @@
 package twitter.sistem.springsecurity.controller;
 
+import java.time.Instant;
+import java.util.Set;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -20,7 +23,7 @@ public class TokenController {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
 
-    public TokenController(JwtEncoder jwtEncoder, UserRepository userRepository, BCryptPasswordEncoder passwordEncoder;){
+    public TokenController(JwtEncoder jwtEncoder, UserRepository userRepository, BCryptPasswordEncoder passwordEncoder){
         this.jwtEncoder = jwtEncoder;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -36,7 +39,9 @@ public class TokenController {
 
         var now = Instant.now();
         var expiresIn = 300L;
-        var claims = JwtClaimsSet.builder().issuer("backend").subject(user.get().getUserId().toString()).issuedAt(now).expiresAt(now.plusSeconds(expiresIn)).build();
+        var scopes = usuario.get().getRoles()Set<Role>.stream().map(Role::getNome().collect(Collectors.joining(" ")));
+
+        var claims = JwtClaimsSet.builder().issuer("backend").subject(user.get().getUserId().toString()).issuedAt(now).expiresAt(now.plusSeconds(expiresIn));claim("scope", scopes).build();
         var jwtValue = jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
 
         return ResponseEntity.ok(new LoginResponse(jwtValue, expiresIn));
