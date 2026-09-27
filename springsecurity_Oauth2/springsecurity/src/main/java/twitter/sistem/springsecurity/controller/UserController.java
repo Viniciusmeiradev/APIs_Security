@@ -2,6 +2,7 @@ package twitter.sistem.springsecurity.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -46,9 +47,11 @@ public class UserController {
     }
 
     @GetMapping("/users")
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     public ResponseEntity<List<User>>listUser(){
         var users = userRepository.findAll();
         return ResponseEntity.ok(users);
     }
 }
+
 
