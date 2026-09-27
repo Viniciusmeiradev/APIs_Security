@@ -3,6 +3,7 @@ package twitter.sistem.springsecurity.conf;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import jakarta.transaction.Transactional;
 import twitter.sistem.springsecurity.entities.Role;
@@ -23,21 +24,23 @@ public class AdminUserConf implements CommandLineRunner {
 
     @Override
     @Transactional 
-    public void run(String args) throws Exception{
+    public void run(String... args) throws Exception{
         var roleAdmin = roleRepository.findByName(Role.Values.ADMIN.name());
         var userAdmin = userRepository.findByUsername("admin");
         
-        userAdmin.ifPresentOrElse{
+        userAdmin.ifPresentOrElse(
             user -> {
-                System.out.println("Admin já existe")
-            };
+                System.out.println("Admin já existe");
+            },
             () -> {
                 var user = new User();
                 user.setUsername("Admin");
-                user.setPassword(passwordEncoder.encode(rawPassword:"123"));
+                user.setPassword(passwordEncoder.encode("123"));
                 user.setRoles(Set.of(roleAdmin));
+                userRepository.save(user);
+                System.out.println("Admin criado com sucesso!");
             }
-        };
+        );
     }
 }
 
