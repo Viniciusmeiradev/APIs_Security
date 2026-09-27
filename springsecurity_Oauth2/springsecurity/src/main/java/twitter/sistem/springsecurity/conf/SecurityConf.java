@@ -39,6 +39,7 @@ public class SecurityConf{
 
         http
             .authorizeHttpRequests(authorize -> authorize
+                .requestMatches(httpsMethod.POST, "/users").permitAll()
                 .requestMatches(httpsMethod.POST, "/login").permitAll()
                 .anyRequest().authenticated())
 
