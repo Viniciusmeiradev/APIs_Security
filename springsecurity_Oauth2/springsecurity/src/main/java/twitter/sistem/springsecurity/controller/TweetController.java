@@ -1,5 +1,7 @@
 package twitter.sistem.springsecurity.controller;
 
+import java.util.UUID;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,8 +24,12 @@ public class TweetController {
     @PostMapping("/tweets")
     public ResponseEntity<Void> createTweet(@RequestBody CreateTweetDto dto, JwtAuthenticationToken token){
 
-        var user = 
+        var user = userRepository.findById(UUID.fromString(token.getName()));
+        var tweet = new Tweet();
+        tweet.setUser(usuario.get());
+        tweet.setContent(dto.content());
+        tweetRepository.save(tweet);
+        return ResponseEntity.ok().build();
 
     }
 }
-
