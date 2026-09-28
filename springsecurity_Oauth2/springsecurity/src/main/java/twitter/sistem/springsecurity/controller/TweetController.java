@@ -1,21 +1,29 @@
 package twitter.sistem.springsecurity.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import twitter.sistem.springsecurity.repository.TweetRepository;
+import twitter.sistem.springsecurity.repository.UserRepository;
 
 @RestController 
 public class TweetController {
     private final TweetRepository tweetRepository;
+    private final UserRepository userRepository;
 
-    public TweetController(TweetRepository tweetRepository){
+    public TweetController(TweetRepository tweetRepository, UserRepository userRepository){
         this.tweetRepository = tweetRepository;
+        this.userRepository = userRepository;
     }
 
     @PostMapping("/tweets")
-    public ResponseEntity<Void> createTweet(){
+    public ResponseEntity<Void> createTweet(@RequestBody CreateTweetDto dto, JwtAuthenticationToken token){
+
+        var user = 
 
     }
 }
+
