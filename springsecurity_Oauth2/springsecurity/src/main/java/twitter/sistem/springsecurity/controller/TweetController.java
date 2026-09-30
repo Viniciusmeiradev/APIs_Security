@@ -2,6 +2,8 @@ package twitter.sistem.springsecurity.controller;
 
 import java.util.UUID;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
@@ -18,6 +20,7 @@ import twitter.sistem.springsecurity.controller.dto.CreateTweetDto;
 import twitter.sistem.springsecurity.entities.Tweet;
 import twitter.sistem.springsecurity.repository.TweetRepository;
 import twitter.sistem.springsecurity.repository.UserRepository;
+import twitter.sistem.springsecurity.controller.dto.FeedDto;
 
 @RestController 
 public class TweetController {
@@ -31,9 +34,9 @@ public class TweetController {
 
     //Lista tweet
     @GetMapping("/feed")
-    public ResponseEntity<FeedDto>feed(@RequestParam(value = "page", defaultValue = "0")int page,
-                                         @RequestParam(value = "pageSize", defaultValue = "10") int pageSize){
-
+    public ResponseEntity<FeedDto>feed(@RequestParam(value = "page", defaultValue = "0")int page, @RequestParam(value = "pageSize", defaultValue = "10") int pageSize){
+        var tweets = tweetRepository.findAll(PageRequest.of(page, pageSize, Sort.Direction.DESC, "creationTimestamp"));
+        .map
     }
 
     //Criar tweet
