@@ -3,12 +3,14 @@ package twitter.sistem.springsecurity.conf;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import jakarta.transaction.Transactional;
 import twitter.sistem.springsecurity.entities.Role;
+import twitter.sistem.springsecurity.entities.User;
 import twitter.sistem.springsecurity.repository.RoleRepository;
 import twitter.sistem.springsecurity.repository.UserRepository;
+
+import java.util.Set;
 
 @Configuration 
 public class AdminUserConf implements CommandLineRunner {
@@ -26,7 +28,7 @@ public class AdminUserConf implements CommandLineRunner {
     @Transactional 
     public void run(String... args) throws Exception{
         var roleAdmin = roleRepository.findByName(Role.Values.ADMIN.name());
-        var userAdmin = userRepository.findByUsername("admin");
+        var userAdmin = userRepository.findByNome("admin");
         
         userAdmin.ifPresentOrElse(
             user -> {
@@ -34,8 +36,8 @@ public class AdminUserConf implements CommandLineRunner {
             },
             () -> {
                 var user = new User();
-                user.setUsername("Admin");
-                user.setPassword(passwordEncoder.encode("123"));
+                user.setNome("Admin");
+                user.setSenha(passwordEncoder.encode("123"));
                 user.setRoles(Set.of(roleAdmin));
                 userRepository.save(user);
                 System.out.println("Admin criado com sucesso!");
