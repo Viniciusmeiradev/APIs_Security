@@ -1,9 +1,12 @@
 package twitter.sistem.springsecurity.entities;
 
 import jakarta.persistence.*;
+import twitter.sistem.springsecurity.controller.dto.LoginRequest;
+
 import java.util.UUID;
 import java.util.Set;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
 
 @Entity
 @Table(name = "tb_usuarios")
