@@ -21,6 +21,7 @@ import twitter.sistem.springsecurity.entities.Tweet;
 import twitter.sistem.springsecurity.repository.TweetRepository;
 import twitter.sistem.springsecurity.repository.UserRepository;
 import twitter.sistem.springsecurity.controller.dto.FeedDto;
+import twitter.sistem.springsecurity.controller.dto.FeedItemDto;
 
 @RestController 
 public class TweetController {
@@ -36,7 +37,8 @@ public class TweetController {
     @GetMapping("/feed")
     public ResponseEntity<FeedDto>feed(@RequestParam(value = "page", defaultValue = "0")int page, @RequestParam(value = "pageSize", defaultValue = "10") int pageSize){
         var tweets = tweetRepository.findAll(PageRequest.of(page, pageSize, Sort.Direction.DESC, "creationTimestamp"));
-        .map
+        .map(tweet -> new FeedItemDto(tweet.getTweetId(), tweet.getContent, tweet.getUsuario, tweet.getNome));
+        return ResponseEntity.ok(new FeedDto(tweets.getContent(),page, pageSize, tweets.getTotalPages(), tweets.getTotalElements()));
     }
 
     //Criar tweet
