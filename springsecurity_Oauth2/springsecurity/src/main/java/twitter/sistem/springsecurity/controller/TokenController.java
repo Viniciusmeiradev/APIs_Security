@@ -1,7 +1,7 @@
 package twitter.sistem.springsecurity.controller;
 
 import java.time.Instant;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import twitter.sistem.springsecurity.controller.dto.LoginRequest;
 import twitter.sistem.springsecurity.controller.dto.LoginResponse;
+import twitter.sistem.springsecurity.entities.Role;
 import twitter.sistem.springsecurity.repository.UserRepository;
 
 @RestController
@@ -31,7 +32,7 @@ public class TokenController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse>login(@RequestBody LoginRequest loginRequest){
-        var user = userRepository.findBynome(loginRequest.nome());
+        var user = userRepository.findByNome(loginRequest.nome());
 
         if(user.isEmpty() || !user.get().isLoginCorrect(loginRequest, passwordEncoder)){
             throw new BadCredentialsException("Usuario ou senha inválido!");
@@ -39,9 +40,9 @@ public class TokenController {
 
         var now = Instant.now();
         var expiresIn = 300L;
-        var scopes = usuario.get().getRoles()Set<Role>.stream().map(Role::getNome().collect(Collectors.joining(" ")));
+        var scopes = user.get().getRoles().stream().map(Role::getName).collect(Collectors.joining(" "));
 
-        var claims = JwtClaimsSet.builder().issuer("backend").subject(user.get().getUserId().toString()).issuedAt(now).expiresAt(now.plusSeconds(expiresIn));claim("scope", scopes).build();
+        var claims = JwtClaimsSet.builder().issuer("backend").subject(user.get().getUserId().toString()).issuedAt(now).expiresAt(now.plusSeconds(expiresIn)).claim("scope", scopes).build();
         var jwtValue = jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
 
         return ResponseEntity.ok(new LoginResponse(jwtValue, expiresIn));
