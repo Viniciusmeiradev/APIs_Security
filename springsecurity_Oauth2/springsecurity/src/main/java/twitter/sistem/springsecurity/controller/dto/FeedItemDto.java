@@ -1,5 +1,8 @@
 package twitter.sistem.springsecurity.controller.dto;
 
-public record FeedItemDto(long tweetId, String content, String nome) {
+import twitter.sistem.springsecurity.entities.User;
+
+public record FeedItemDto(long tweetId, String conteudo, User usuario) {
     
 }
+
