@@ -22,6 +22,7 @@ import twitter.sistem.springsecurity.repository.TweetRepository;
 import twitter.sistem.springsecurity.repository.UserRepository;
 import twitter.sistem.springsecurity.controller.dto.FeedDto;
 import twitter.sistem.springsecurity.controller.dto.FeedItemDto;
+import twitter.sistem.springsecurity.entities.Role;
 
 @RestController 
 public class TweetController {
@@ -36,8 +37,9 @@ public class TweetController {
     //Lista tweet
     @GetMapping("/feed")
     public ResponseEntity<FeedDto>feed(@RequestParam(value = "page", defaultValue = "0")int page, @RequestParam(value = "pageSize", defaultValue = "10") int pageSize){
-        var tweets = tweetRepository.findAll(PageRequest.of(page, pageSize, Sort.Direction.DESC, "creationTimestamp"));
-        .map(tweet -> new FeedItemDto(tweet.getTweetId(), tweet.getContent, tweet.getUsuario, tweet.getNome));
+        var tweets = tweetRepository.findAll(PageRequest.of(page, pageSize, Sort.Direction.DESC, "creationTimestamp"))
+            .map(tweet -> new FeedItemDto(tweet.getTweetId(), tweet.getConteudo(), tweet.getUser()));
+        
         return ResponseEntity.ok(new FeedDto(tweets.getContent(),page, pageSize, tweets.getTotalPages(), tweets.getTotalElements()));
     }
 
@@ -45,10 +47,10 @@ public class TweetController {
     @PostMapping("/tweets")
     public ResponseEntity<Void> createTweet(@RequestBody CreateTweetDto dto, JwtAuthenticationToken token){
 
-        var user = userRepository.findById(UUID.fromString(token.getNome()));
+        var user = userRepository.findById(UUID.fromString(token.getName()));
         var tweet = new Tweet();
-        tweet.setUser(usuario.get());
-        tweet.setContent(dto.content());
+        tweet.setUsuario(user.get());
+        tweet.setConteudo(dto.conteudo());
         tweetRepository.save(tweet);
         return ResponseEntity.ok().build();
     }
@@ -57,11 +59,11 @@ public class TweetController {
     @DeleteMapping("/tweets/{id}")
     public ResponseEntity<Void> deleteTweet(@PathVariable("id")Long tweetId, JwtAuthenticationToken token){
         
-        var user = userRepository.findById(UUID.fromString(token.getNome()));
+        var user = userRepository.findById(UUID.fromString(token.getName()));
         var tweet = tweetRepository.findById(tweetId).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        var isAdmin = user.get().getRoles().stream().anyMatch(role -> role.getNome().equalsIgnoreCase(Role.Values.ADMIN.nome()));
+        var isAdmin = user.get().getRoles().stream().anyMatch(role -> role.getName().equalsIgnoreCase(Role.Values.ADMIN.name()));
         
-        if(isAdmin || tweet.getUsuario().getUserId().equals(UUID.fromString(token.getName()))){
+        if(isAdmin || tweet.getUser().getUserId().equals(UUID.fromString(token.getName()))){
             tweetRepository.deleteById(tweetId);
         }else{
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
