@@ -13,7 +13,7 @@ public class Tweet{
 
     @ManyToOne
     @JoinColumn(name = 'user_id')
-    private User usuario;
+    private User user;
 
 
     private String conteudo;
@@ -28,11 +28,11 @@ public class Tweet{
         this.tweetId = tweetId;
     }
 
-    public User getUsuario(){
-        return usuario;
+    public User getUser(){
+        return user;
     }
-    public void setUsuario(User usuario){
-        this.usuario = usuario;
+    public void setUsuario(User user){
+        this.user = user;
     }
 
     public String getConteudo(){
