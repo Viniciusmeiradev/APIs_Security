@@ -2,6 +2,10 @@ package twitter.sistem.springsecurity.entities;
 
 import jakarta.persistence.*;
 
+import java.time.Instant;
+
+import org.hibernate.annotations.CreationTimestamp;
+
 @Entity
 @Table(name = "tb_tweets")
 public class Tweet{
@@ -12,7 +16,7 @@ public class Tweet{
     private Long tweetId;
 
     @ManyToOne
-    @JoinColumn(name = 'user_id')
+    @JoinColumn(name = "user_id")
     private User user;
 
 
