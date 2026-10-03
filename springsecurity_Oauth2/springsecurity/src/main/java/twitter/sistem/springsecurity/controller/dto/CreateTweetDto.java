@@ -1,5 +1,5 @@
 package twitter.sistem.springsecurity.controller.dto;
 
-public record CreateTweetDto(String content) {
+public record CreateTweetDto(String conteudo) {
     
 }
