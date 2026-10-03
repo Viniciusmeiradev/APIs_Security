@@ -1,6 +1,6 @@
 package twitter.sistem.springsecurity.controller;
 
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -17,6 +17,9 @@ import twitter.sistem.springsecurity.repository.UserRepository;
 import twitter.sistem.springsecurity.entities.Role;
 import twitter.sistem.springsecurity.entities.User;
 
+import java.util.List;
+import java.util.Set;
+
 @RestController 
 public class UserController {
     private final UserRepository userRepository;
@@ -32,12 +35,12 @@ public class UserController {
     @PostMapping("/users")
     @Transactional 
     public ResponseEntity<Void> newUser(@RequestBody CreateUserDto dto){
-        var basicRole = roleRepository.findByNome(Role.Values.BASIC.name());
+        var basicRole = roleRepository.findByName(Role.Values.BASIC.name());
         var userDatabase = userRepository.findByNome(dto.nome());
         if (userDatabase.isPresent()){
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY);
+            throw new ResponseStatusException(HttpStatusCode.valueOf(422), "Falha de validação.");
         }
-        var usuario = new Usuario();
+        var usuario = new User();
         usuario.setNome(dto.nome());
         usuario.setSenha(passwordEncoder.encode(dto.senha()));
         usuario.setRoles(Set.of(basicRole));
